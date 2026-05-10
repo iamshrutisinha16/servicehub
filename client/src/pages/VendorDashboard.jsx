@@ -11,7 +11,7 @@ function VendorDashboard() {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/api/bookings"
+        "https://servicehub-dxk3.onrender.com/api/bookings"
       );
 
       const data = await response.json();
@@ -40,7 +40,7 @@ function VendorDashboard() {
     try {
 
       const response = await fetch(
-        `http://localhost:5000/api/bookings/${id}`,
+        `https://servicehub-dxk3.onrender.com/api/bookings/${id}`,
         {
           method: "PATCH",
 

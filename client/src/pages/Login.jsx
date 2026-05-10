@@ -19,7 +19,7 @@ function Login() {
 
       // API URL
       const res = await axios.post(
-        "https://https://servicehub-dxk3.onrender.com/api/users/login",
+        "https://servicehub-dxk3.onrender.com/api/users/login",
         {
           email,
           password,

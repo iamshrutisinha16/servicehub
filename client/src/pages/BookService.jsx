@@ -10,8 +10,6 @@ function BookService() {
     date: "",
   });
 
-
-
   const handleChange = (e) => {
 
     setFormData({
