@@ -7,7 +7,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://servicehub-three.vercel.app/",
+    origin: "https://servicehub-three.vercel.app",
     credentials: true,
   })
 );
