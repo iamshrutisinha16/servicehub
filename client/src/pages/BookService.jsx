@@ -1,6 +1,70 @@
 import Navbar from "../components/Navbar";
+import { useState } from "react";
 
 function BookService() {
+
+  const [formData, setFormData] = useState({
+    customerName: "",
+    service: "AC Repair",
+    address: "",
+    date: "",
+  });
+
+
+
+  const handleChange = (e) => {
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+
+
+  const handleBooking = async () => {
+
+    try {
+
+      const response = await fetch(
+        "https://servicehub-dxk3.onrender.com/api/bookings/create",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+
+        alert("Booking Successful");
+
+        setFormData({
+          customerName: "",
+          service: "AC Repair",
+          address: "",
+          date: "",
+        });
+
+      } else {
+
+        alert(data.message);
+      }
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+
+
   return (
     <>
       <Navbar />
@@ -39,7 +103,7 @@ function BookService() {
 
             </div>
 
-            {/* FORM */}
+            {/* NAME */}
 
             <div className="mb-3">
 
@@ -51,12 +115,17 @@ function BookService() {
                 type="text"
                 placeholder="Enter your name"
                 className="form-control py-2"
+                name="customerName"
+                value={formData.customerName}
+                onChange={handleChange}
                 style={{
                   borderRadius: "12px",
                 }}
               />
 
             </div>
+
+            {/* SERVICE */}
 
             <div className="mb-3">
 
@@ -66,6 +135,9 @@ function BookService() {
 
               <select
                 className="form-select py-2"
+                name="service"
+                value={formData.service}
+                onChange={handleChange}
                 style={{
                   borderRadius: "12px",
                 }}
@@ -78,6 +150,8 @@ function BookService() {
 
             </div>
 
+            {/* ADDRESS */}
+
             <div className="mb-3">
 
               <label className="form-label fw-semibold">
@@ -88,12 +162,17 @@ function BookService() {
                 rows="4"
                 placeholder="Enter your address"
                 className="form-control"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
                 style={{
                   borderRadius: "12px",
                 }}
               ></textarea>
 
             </div>
+
+            {/* DATE */}
 
             <div className="mb-4">
 
@@ -104,6 +183,9 @@ function BookService() {
               <input
                 type="date"
                 className="form-control py-2"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
                 style={{
                   borderRadius: "12px",
                 }}
@@ -119,6 +201,7 @@ function BookService() {
                 borderRadius: "12px",
                 fontSize: "18px",
               }}
+              onClick={handleBooking}
             >
               Book Now
             </button>
