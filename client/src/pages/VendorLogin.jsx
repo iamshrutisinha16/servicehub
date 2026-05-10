@@ -10,6 +10,9 @@ function VendorLogin() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
 
     setFormData({
@@ -20,46 +23,62 @@ function VendorLogin() {
 
   const handleLogin = async () => {
 
+    if (!formData.email || !formData.password) {
+      setMessage("Please fill all fields");
+      return;
+    }
+
     try {
+
+      setLoading(true);
+      setMessage("");
 
       const response = await fetch(
         "https://servicehub-dxk3.onrender.com/api/users/login",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify(formData),
         }
       );
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (!response.ok) {
+        setMessage(data.message || "Login failed");
+        return;
+      }
 
-        // CHECK ROLE
+      // Save user locally
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
-        if (data.user.role !== "vendor") {
+      // ROLE CHECK
+      if (data.user.role === "vendor") {
 
-          alert("Access Denied! Vendor only.");
-
-          return;
-        }
-
-        alert("Vendor Login Successful");
+        setMessage("Vendor Login Successful");
 
         navigate("/vendor-dashboard");
 
       } else {
 
-        alert(data.message);
+        setMessage("Not a vendor account");
+
+        navigate("/"); // customer redirect
       }
 
     } catch (error) {
 
       console.log(error);
+      setMessage("Something went wrong");
+
+    } finally {
+
+      setLoading(false);
     }
   };
 
@@ -69,34 +88,45 @@ function VendorLogin() {
       style={{ maxWidth: "400px" }}
     >
 
-      <h2 className="mb-4 text-center">
-        Vendor Login
-      </h2>
+      <div className="card shadow p-4">
 
-      <input
-        type="email"
-        placeholder="Enter Email"
-        className="form-control mb-3"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-      />
+        <h2 className="mb-4 text-center">
+          Vendor Login
+        </h2>
 
-      <input
-        type="password"
-        placeholder="Enter Password"
-        className="form-control mb-3"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-      />
+        {message && (
+          <div className="alert alert-info">
+            {message}
+          </div>
+        )}
 
-      <button
-        className="btn btn-warning w-100"
-        onClick={handleLogin}
-      >
-        Login
-      </button>
+        <input
+          type="email"
+          placeholder="Enter Email"
+          className="form-control mb-3"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+
+        <input
+          type="password"
+          placeholder="Enter Password"
+          className="form-control mb-3"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+
+        <button
+          className="btn btn-warning w-100"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+      </div>
 
     </div>
   );

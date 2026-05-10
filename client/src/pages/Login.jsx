@@ -32,7 +32,7 @@ function Login() {
       setMessage("Login Successful");
 
       // Redirect
-      window.location.href = "/dashboard";
+      window.location.href = "/";
 
     } catch (error) {
       console.log(error);
