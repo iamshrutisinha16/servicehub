@@ -42,7 +42,7 @@ function Login() {
       const user = res.data.user;
 
       if (!user) {
-        setMessage("Invalid response from server");
+        setMessage("Invalid server response");
         return;
       }
 
@@ -52,12 +52,14 @@ function Login() {
         JSON.stringify(user)
       );
 
-      setMessage("Login Successful");
-
       console.log("LOGIN USER:", user);
 
-      // 🔥 ROLE BASED REDIRECT
-      if (user.role === "vendor") {
+      setMessage("Login Successful");
+
+      // 🔥 SAFE ROLE CHECK
+      const role = user.role || "customer";
+
+      if (role === "vendor") {
 
         navigate("/vendor-dashboard");
 
@@ -122,9 +124,7 @@ function Login() {
           onClick={handleLogin}
           disabled={loading}
         >
-          {loading
-            ? "Logging in..."
-            : "Login"}
+          {loading ? "Logging in..." : "Login"}
         </button>
 
       </div>

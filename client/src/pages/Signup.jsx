@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
 
@@ -13,7 +13,6 @@ function Signup() {
   });
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -41,9 +40,14 @@ function Signup() {
 
         alert("Signup Successful");
 
-        navigate("/login");
-      } else {
+        // 🔥 ROLE BASED REDIRECT AFTER SIGNUP
+        if (formData.role === "vendor") {
+          navigate("/vendor-login");
+        } else {
+          navigate("/login");
+        }
 
+      } else {
         alert(data.message);
       }
 
@@ -55,61 +59,47 @@ function Signup() {
   return (
     <div className="container mt-5" style={{ maxWidth: "400px" }}>
 
-      <div className="card shadow p-4">
+      <h2 className="mb-4 text-center">Signup</h2>
 
-        <h2 className="mb-4 text-center">
-          Signup
-        </h2>
+      <input
+        name="name"
+        placeholder="Enter Name"
+        className="form-control mb-3"
+        onChange={handleChange}
+      />
 
-        <input
-          name="name"
-          placeholder="Enter Name"
-          className="form-control mb-3"
-          value={formData.name}
-          onChange={handleChange}
-        />
+      <input
+        name="email"
+        placeholder="Enter Email"
+        className="form-control mb-3"
+        onChange={handleChange}
+      />
 
-        <input
-          name="email"
-          placeholder="Enter Email"
-          className="form-control mb-3"
-          value={formData.email}
-          onChange={handleChange}
-        />
+      <input
+        name="password"
+        type="password"
+        placeholder="Enter Password"
+        className="form-control mb-3"
+        onChange={handleChange}
+      />
 
-        <input
-          name="password"
-          placeholder="Enter Password"
-          type="password"
-          className="form-control mb-3"
-          value={formData.password}
-          onChange={handleChange}
-        />
+      {/* 🔥 ROLE DROPDOWN */}
+      <select
+        name="role"
+        className="form-control mb-3"
+        value={formData.role}
+        onChange={handleChange}
+      >
+        <option value="customer">Customer</option>
+        <option value="vendor">Vendor</option>
+      </select>
 
-        {/* 🔥 ROLE SELECT ADDED */}
-        <select
-          name="role"
-          className="form-control mb-3"
-          value={formData.role}
-          onChange={handleChange}
-        >
-          <option value="customer">
-            Customer
-          </option>
-
-          <option value="vendor">
-            Vendor
-          </option>
-        </select>
-
-        <button
-          className="btn btn-primary w-100"
-          onClick={handleSignup}
-        >
-          Signup
-        </button>
-
-      </div>
+      <button
+        className="btn btn-primary w-100"
+        onClick={handleSignup}
+      >
+        Signup
+      </button>
 
     </div>
   );
