@@ -6,14 +6,25 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const handleChange = (e) => {
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleLogin = async () => {
 
-    if (!email || !password) {
+    if (!formData.email || !formData.password) {
       setMessage("Please fill all fields");
       return;
     }
@@ -25,21 +36,25 @@ function Login() {
 
       const res = await axios.post(
         "https://servicehub-dxk3.onrender.com/api/users/login",
-        {
-          email,
-          password,
-        }
+        formData
       );
 
       const user = res.data.user;
 
-      // SAVE USER (important for role check later)
+      if (!user) {
+        setMessage("Invalid response from server");
+        return;
+      }
+
+      // SAVE USER
       localStorage.setItem(
         "user",
         JSON.stringify(user)
       );
 
       setMessage("Login Successful");
+
+      console.log("LOGIN USER:", user);
 
       // 🔥 ROLE BASED REDIRECT
       if (user.role === "vendor") {
@@ -86,22 +101,20 @@ function Login() {
 
         <input
           type="email"
+          name="email"
           placeholder="Enter Email"
           className="form-control mb-3"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          value={formData.email}
+          onChange={handleChange}
         />
 
         <input
           type="password"
+          name="password"
           placeholder="Enter Password"
           className="form-control mb-3"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          value={formData.password}
+          onChange={handleChange}
         />
 
         <button

@@ -16,13 +16,15 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+       minlength: 6,
   },
 
   role: {
     type: String,
+    enum: ["customer", "vendor"], 
     default: "customer",
   },
 
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
