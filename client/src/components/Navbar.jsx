@@ -56,6 +56,9 @@ function Navbar() {
             Vendor Login
           </Link>
 
+        <Link to="/signup" className="btn btn-primary">
+  Signup
+</Link>
         </div>
 
       </div>
