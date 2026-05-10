@@ -1,23 +1,28 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleLogin = async () => {
+
     if (!email || !password) {
       setMessage("Please fill all fields");
       return;
     }
 
     try {
+
       setLoading(true);
       setMessage("");
 
-      // API URL
       const res = await axios.post(
         "https://servicehub-dxk3.onrender.com/api/users/login",
         {
@@ -26,22 +31,37 @@ function Login() {
         }
       );
 
-      // Token save
-      localStorage.setItem("token", res.data.token);
+      const user = res.data.user;
+
+      // SAVE USER (important for role check later)
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
 
       setMessage("Login Successful");
 
-      // Redirect
-      window.location.href = "/";
+      // 🔥 ROLE BASED REDIRECT
+      if (user.role === "vendor") {
+
+        navigate("/vendor-dashboard");
+
+      } else {
+
+        navigate("/dashboard");
+      }
 
     } catch (error) {
+
       console.log(error);
 
       setMessage(
         error.response?.data?.message ||
-        "Login Failed "
+        "Login Failed"
       );
+
     } finally {
+
       setLoading(false);
     }
   };
@@ -51,9 +71,11 @@ function Login() {
       className="container mt-5"
       style={{ maxWidth: "400px" }}
     >
+
       <div className="card shadow p-4">
+
         <h2 className="text-center mb-4">
-          Customer Login
+          Login
         </h2>
 
         {message && (
@@ -67,7 +89,9 @@ function Login() {
           placeholder="Enter Email"
           className="form-control mb-3"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
         />
 
         <input
@@ -85,9 +109,13 @@ function Login() {
           onClick={handleLogin}
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading
+            ? "Logging in..."
+            : "Login"}
         </button>
+
       </div>
+
     </div>
   );
 }
